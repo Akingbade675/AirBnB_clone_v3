@@ -2,6 +2,7 @@
 '''main app module'''
 
 from os import getenv
+from flask import Flask, jsonify
 from api.v1.views import app_views
 from models import storage
 
@@ -15,6 +16,12 @@ port = int(getenv("HBNB_API_PORT", default=5000))
 def close(exc):
     '''close the storage session'''
     storage.close()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    '''404 error handler'''
+    return jsonify({"error": "Not found"}), 404
 
 if __name__ == "__main__":
     app.run(host=host, port=port, threaded=True)
