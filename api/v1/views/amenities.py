@@ -15,7 +15,7 @@ def get_all_amenities():
     return jsonify(result)
 
 
-@app_views.route('/amenities/<amenity_id>', strict_slashes=False)
+@app_views.route('/amenities/<string:amenity_id>', strict_slashes=False)
 def get_single_amenity(amenity_id):
     '''retrieves a single amenity with the particular id'''
     amenity = storage.get("Amenity", amenity_id)
@@ -70,4 +70,4 @@ def update_amenity(amenity_id):
             setattr(amenity, key, data[key])
 
     storage.save()
-    return jsonify(amenity.to_dict()), 200
+    return jsonify(amenity.to_dict())

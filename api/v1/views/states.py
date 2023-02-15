@@ -34,7 +34,7 @@ def delete_state(state_id):
     if state:
         state.delete()
         storage.save()
-        return jsonify({}), 200
+        return jsonify({})
     abort(404)
 
 
@@ -70,4 +70,4 @@ def update_state(state_id):
             setattr(state, key, data[key])
 
     storage.save()
-    return jsonify(state.to_dict()), 200
+    return jsonify(state.to_dict())
