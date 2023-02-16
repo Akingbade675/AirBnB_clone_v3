@@ -119,9 +119,13 @@ class TestFileStorage(unittest.TestCase):
         """test that retrieve one object based on the class and its ID,
         or None if not found"""
         storage = FileStorage()
-        for clss in classes.values():
-            first_obj = list(storage.all(clss).values())[0]
-            self.assertIs(storage.get(clss, first_obj.id), first_obj)
+
+        self.assertIs(storage.get("Place", ""), None)
+        self.assertIs(storage.get("Amenity", "room"), None)
+
+        state = State("Lagos")
+        state.save()
+        self.assertIs(storage.get("State", state.id), state)
 
     @unittest.skipIf(models.storage_t == 'db', "testing file storage")
     def test_count(self):
