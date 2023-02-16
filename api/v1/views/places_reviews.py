@@ -59,7 +59,7 @@ def create_review_for_place(place_id):
 
     if 'user_id' not in data:
         return make_response(jsonify({"error": "Missing user_id"}), 400)
-    user = storage.get("User", user_id)
+    user = storage.get("User", data['user_id'])
     if not user:
         abort(404)
 
