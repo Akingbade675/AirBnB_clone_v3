@@ -91,12 +91,25 @@ class TestDBStorage(unittest.TestCase):
     def test_get(self):
         """test that retrieve one object based on the class and its ID,
         or None if not found"""
-        storage = DBStorage()
-        for clss in classes.values():
-            first_obj = list(storage.all(clss).values())[0]
-            self.assertIs(storage.get(clss, first_obj.id), first_obj)
+        new_state = State(name="New York")
+        new_state.save()
+        new_user = User(email="bob@foobar.com", password="password")
+        new_user.save()
+        self.assertIs(new_state, models.storage.get("State", new_state.id))
+        self.assertIs(None, models.storage.get("State", "blah"))
+        self.assertIs(None, models.storage.get("blah", "blah"))
+        self.assertIs(new_user, models.storage.get("User", new_user.id))
 
-    @unittest.skipIf(models.storage_t == 'db', "testing file storage")
+    @unittest.skipIf(models.storage_t != 'db', "testing file storage")
     def test_count(self):
         """test that retrieve one object based on the class and its ID,
         or None if not found"""
+        initial_count = models.storage.count()
+        state_count = models.storage.count("State")
+        self.assertEqual(models.storage.count("Blah"), 0)
+        new_state = State(name="Florida")
+        new_state.save()
+        new_user = User(email="bob@foobar.com", password="password")
+        new_user.save()
+        self.assertEqual(models.storage.count("State"), state_count + 1)
+        self.assertEqual(models.storage.count(), initial_count + 2)
