@@ -15,7 +15,7 @@ def get_places_reviews(place_id):
     place = storage.get("Place", place_id)
     if not place:
         abort(404)
-    reviews = [review.to_dict() for review in places.reviews]
+    reviews = [review.to_dict() for review in place.reviews]
     return jsonify(reviews)
 
 
@@ -70,7 +70,7 @@ def create_review_for_place(place_id):
     review = Review(**data)
     review.save()
 
-    return jsonify(city.to_dict()), 201
+    return jsonify(review.to_dict()), 201
 
 
 @app_views.route(
@@ -79,7 +79,7 @@ def create_review_for_place(place_id):
 def update_review(review_id):
     '''an endpoint that update an existing review'''
     review = storage.get("Review", review_id)
-    if not city:
+    if not review:
         abort(404)
 
     data = request.get_json(silent=True)
