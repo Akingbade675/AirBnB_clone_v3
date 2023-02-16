@@ -15,6 +15,7 @@ CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
 host = getenv("HBNB_API_HOST", default="0.0.0.0")
 port = int(getenv("HBNB_API_PORT", default=5000))
 
+
 @app.teardown_appcontext
 def close(exc):
     '''close the storage session'''
@@ -25,6 +26,7 @@ def close(exc):
 def page_not_found(e):
     '''404 error handler'''
     return make_response(jsonify({"error": "Not found"}), 404)
+
 
 if __name__ == "__main__":
     app.run(host=host, port=port, threaded=True)

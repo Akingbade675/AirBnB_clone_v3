@@ -7,7 +7,8 @@ from models.review import Review
 from flask import abort, jsonify, request, make_response
 
 
-@app_views.route('/places/<place_id>/reviews',
+@app_views.route(
+                '/places/<place_id>/reviews',
                 methods=['GET'], strict_slashes=False)
 def get_places_reviews(place_id):
     '''Retrieves the list of all Review objects of a Place'''
@@ -18,7 +19,8 @@ def get_places_reviews(place_id):
     return jsonify(reviews)
 
 
-@app_views.route('/reviews/<string:review_id>',
+@app_views.route(
+                '/reviews/<string:review_id>',
                 methods=['GET'], strict_slashes=False)
 def get_review(review_id):
     '''retrieves a single review with the particular id'''
@@ -42,7 +44,9 @@ def delete_review(review_id):
     abort(404)
 
 
-@app_views.route('/places/<string:place_id>/reviews', methods=['POST'], strict_slashes=False)
+@app_views.route(
+                '/places/<string:place_id>/reviews',
+                methods=['POST'], strict_slashes=False)
 def create_review_for_place(place_id):
     '''an endpoint that create a new review for a place'''
     place = storage.get("Place", place_id)
@@ -69,7 +73,9 @@ def create_review_for_place(place_id):
     return jsonify(city.to_dict()), 201
 
 
-@app_views.route('/reviews/<string:review_id>', methods=['PUT'], strict_slashes=False)
+@app_views.route(
+                '/reviews/<string:review_id>',
+                methods=['PUT'], strict_slashes=False)
 def update_review(review_id):
     '''an endpoint that update an existing review'''
     review = storage.get("Review", review_id)
@@ -80,7 +86,7 @@ def update_review(review_id):
     if not data:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
 
-    ignore_keys = ["id", "user_id", "place_id","created_at", "updated_at"]
+    ignore_keys = ["id", "user_id", "place_id", "created_at", "updated_at"]
     for key in data:
         if key not in ignore_keys:
             setattr(review, key, data[key])

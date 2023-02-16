@@ -13,8 +13,8 @@ def get_state_cities(state_id):
     state = storage.get("State", state_id)
     if not state:
         abort(404)
-    res = [city.to_dict() for city in states.cities]
-    return jsonify(res)
+    cities = [city.to_dict() for city in state.cities]
+    return jsonify(cities)
 
 
 @app_views.route('/cities/<string:city_id>', strict_slashes=False)
@@ -30,7 +30,7 @@ def get_city(city_id):
                 '/cities/<string:city_id>',
                 methods=['DELETE'],
                 strict_slashes=False)
-def delete_state(city_id):
+def delete_city(city_id):
     '''endpoint that deletes a single city'''
     city = storage.get("City", city_id)
     if city:
@@ -40,7 +40,9 @@ def delete_state(city_id):
     abort(404)
 
 
-@app_views.route('/states/<string:state_id>/cities', methods=['POST'], strict_slashes=False)
+@app_views.route(
+                '/states/<string:state_id>/cities',
+                methods=['POST'], strict_slashes=False)
 def create_city_for_state(state_id):
     '''an endpoint that create a new city for a state'''
     state = storage.get("State", state_id)
@@ -60,8 +62,10 @@ def create_city_for_state(state_id):
     return jsonify(city.to_dict()), 201
 
 
-@app_views.route('/cities/<string:city_id>', methods=['PUT'], strict_slashes=False)
-def update_state(city_id):
+@app_views.route(
+                '/cities/<string:city_id>',
+                methods=['PUT'], strict_slashes=False)
+def update_city(city_id):
     '''an endpoint that update an existing city'''
     city = storage.get("City", city_id)
     if not city:

@@ -7,7 +7,8 @@ from models.place import Place
 from flask import abort, jsonify, request, make_response
 
 
-@app_views.route('/cities/<city_id>/places', 
+@app_views.route(
+                '/cities/<city_id>/places',
                 methods=['GET'], strict_slashes=False)
 def get_places_in_city(city_id):
     '''Retrieves the list of all Places objects of a City'''
@@ -18,7 +19,8 @@ def get_places_in_city(city_id):
     return jsonify(places)
 
 
-@app_views.route('/places/<place_id>',
+@app_views.route(
+                '/places/<place_id>',
                 methods=['GET'], strict_slashes=False)
 def get_place(place_id):
     '''retrieves a single place with the particular id'''
@@ -42,7 +44,9 @@ def delete_place(place_id):
     abort(404)
 
 
-@app_views.route('/cities/<city_id>/places', methods=['POST'], strict_slashes=False)
+@app_views.route(
+                '/cities/<city_id>/places',
+                methods=['POST'], strict_slashes=False)
 def create_place_in_city(city_id):
     '''an endpoint that create a new place for a city'''
     city = storage.get("City", city_id)
