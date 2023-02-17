@@ -12,6 +12,7 @@ from flask import abort, jsonify, request, make_response
                 methods=['GET'], strict_slashes=False)
 def get_places_in_city(city_id):
     '''Retrieves the list of all Places objects of a City'''
+    print("ENDPOINT => get places")
     city = storage.get("City", city_id)
     if not city:
         abort(404)
@@ -96,47 +97,59 @@ def update_place(place_id):
 @app_views.route(
                 '/places_search',
                 methods=['POST'], strict_slashes=False)
-def places_search():
+def place_search():
     '''retrieves all Place objects depending of the JSON
     in the body of the request'''
+    print("ENDPOINT => /places_search")
     data = request.get_json(silent=True)
     if data is None:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
 
     places = []
     list_cities = []
-    if data == []:
-        if data.get("states"):
-            states = [storage.get("State", s_id) for s_id in data["states"]]
+
+    states_data = data.get("states")
+    cities_data = data.get("cities")
+    amenities_data = data.get("amenities")
+
+    if data != {}:
+        if states_data:
+            states = [storage.get("State", s_id) for s_id in states_data]
             for state in states:
-                list_cities.extend(state.cities)
-                places.extend([city.places for city in state.cities])
+                [list_cities.append(city) for city in state.cities]
+                print([city.places for city in state.cities])
+                [places.append(place)
+                    for city in state.cities
+                    for place in city.places]
+            print(list_cities)
 
-        if data.get("cities"):
-            cities = [storage.get("City", c_id) for c_id in data["cities"]]
-            places.extend(
-                [city.places for city in cities if city not in list_cities]
-            )
+        if cities_data:
+            cities = [storage.get("City", c_id) for c_id in cities_data]
+            [places.append(place)
+                for city in cities
+                if city not in list_cities
+                for place in city.places]
 
-        if not places:
-            places = storage.all("Place").values()
+    if not states_data and not cities_data:
+        places = storage.all("Place").values()
 
-        if not data.get("amenities"):
-            amenities = [
-                storage.get("Amenity", a_id)
-                for a_id in data["amenities"]
-            ]
-            places = [
-                place for place in places
-                if all([am in place.amenities for am in amenities])
-            ]
+    if amenities_data:
+        amenities = [
+            storage.get("Amenity", a_id)
+            for a_id in amenities_data
+        ]
+        places = [
+            place for place in places
+            if all([am in place.amenities for am in amenities])
+        ]
 
-        list_places = []
-        for p in places:
-            d = p.to_dict()
-            d.pop('amenities', None)
-            d.pop('amenity_ids', None)
-            d.pop('reviews', None)
-            list_places.append(d)
+    print(places)
+    list_places = []
+    for p in places:
+        d = p.to_dict()
+        d.pop('amenities', None)
+        d.pop('amenity_ids', None)
+        d.pop('reviews', None)
+        list_places.append(d)
 
-        return jsonify(list_places)
+    return jsonify(list_places)

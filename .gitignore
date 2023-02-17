@@ -1,2 +1,7 @@
- __pycache__/
- *.pyc
+__pycache__/
+*.pyc
+file.json
+console_copy.py
+main_0.py
+setup_main_0.py
+tmp_console_main.py
