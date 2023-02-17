@@ -114,17 +114,22 @@ def places_search():
 
         if data.get("cities"):
             cities = [storage.get("City", c_id) for c_id in data["cities"]]
-            places.extend([city.places for city in cities if city not in list_cities])
+            places.extend(
+                [city.places for city in cities if city not in list_cities]
+            )
 
         if not places:
             places = storage.all("Place").values()
 
         if not data.get("amenities"):
-            amenities = [storage.get("Amenity", a_id)
-                        for a_id in data["amenities"]]
+            amenities = [
+                        storage.get("Amenity", a_id)
+                        for a_id in data["amenities"]
+                    ]
             for place in places:
-                places = [place.to_dict() for place in places
-                            if any(amenity in place.amenities
-                                for amenity in amenities)]
+                places = [
+                    place for place in list_places
+                    if all(am in place.amenities for am in amenities)
+                ]
 
         return jsonify(places)
