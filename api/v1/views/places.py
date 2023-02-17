@@ -123,13 +123,14 @@ def places_search():
 
         if not data.get("amenities"):
             amenities = [
-                        storage.get("Amenity", a_id)
-                        for a_id in data["amenities"]
-                    ]
-            for place in places:
-                places = [
-                    place for place in list_places
-                    if all(am in place.amenities for am in amenities)
-                ]
+                storage.get("Amenity", a_id)
+                for a_id in data["amenities"]
+            ]
+            places = [
+                place for place in places
+                if all(am in place.amenities for am in amenities)
+            ]
+
+        places = [place.to_dict() for place in places]
 
         return jsonify(places)
